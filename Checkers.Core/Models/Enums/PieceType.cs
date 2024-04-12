@@ -1,4 +1,4 @@
 ﻿namespace Checkers.Core.Models.Enums
 {
-    public enum PieceType { Normal, King }
+    public enum PieceType { Pawn, King }
 }

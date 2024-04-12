@@ -5,7 +5,29 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Checkers.Core"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="Checkers Main Menu" Height="600" Width="600"
+        Icon="Assets/Checkers.ico"
+        WindowStartupLocation="CenterScreen">
+    <Grid Margin="20">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="1*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="1*" />
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Row="0" Grid.Column="0" Text="File" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="30" FontWeight="Bold" />
+        <TextBlock Grid.Row="0" Grid.Column="1" Text="Help" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="30" FontWeight="Bold" />
+        <Button Grid.Row="1" Grid.Column="0" Content="New Game" Width="125" Height="40" Click="Button_NewGame_Click" />
+        <Button Grid.Row="2" Grid.Column="0" Content="Save Game" Width="125" Height="40" />
+        <Button Grid.Row="3" Grid.Column="0" Content="Open Game" Width="125" Height="40" />
+        <Button Grid.Row="4" Grid.Column="0" Content="Allow Multiple Jumps" Width="125" Height="40" />
+        <Button Grid.Row="5" Grid.Column="0" Content="Statistics" Width="125" Height="40" />
+        <Button Grid.Row="1" Grid.Column="1" Content="About" Width="125" Height="40" />
     </Grid>
 </Window>

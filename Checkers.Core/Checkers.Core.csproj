@@ -58,6 +58,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Images\Images.cs" />
+    <Compile Include="Models\Board.cs" />
+    <Compile Include="Models\Direction.cs" />
+    <Compile Include="Models\Enums\Player.cs" />
+    <Compile Include="Models\GameState.cs" />
+    <Compile Include="Models\Pieces\King.cs" />
+    <Compile Include="Models\Pieces\Pawn.cs" />
+    <Compile Include="Models\Pieces\Piece.cs" />
+    <Compile Include="NewGameView.xaml.cs">
+      <DependentUpon>NewGameView.xaml</DependentUpon>
+    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -71,17 +82,14 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="NewGameView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\Enums\Color.cs" />
     <Compile Include="Models\Enums\PieceType.cs" />
-    <Compile Include="Models\Game.cs" />
-    <Compile Include="Models\GameBoard.cs" />
-    <Compile Include="Models\Move.cs" />
-    <Compile Include="Models\Piece.cs" />
-    <Compile Include="Models\Player.cs" />
     <Compile Include="Models\Position.cs" />
-    <Compile Include="Models\Square.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -108,6 +116,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\BlackCursor.cur" />
+    <Resource Include="Assets\Board.png" />
+    <Resource Include="Assets\Checkers.ico" />
+    <Resource Include="Assets\RedKing.png" />
+    <Resource Include="Assets\RedPawn.png" />
+    <Resource Include="Assets\WhiteCursor.cur" />
+    <Resource Include="Assets\WhiteKing.png" />
+    <Resource Include="Assets\WhitePawn.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
