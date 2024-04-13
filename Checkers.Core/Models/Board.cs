@@ -45,11 +45,12 @@ namespace Checkers.Core.Models
                 for (int c = 0; c < pieces.GetLength(1); ++c)
                 {
                     Position position = new Position(r, c);
-                    if (!IsEmpty(position))
-                        yield return position;
+                    if (!IsEmpty(position)) yield return position;
                 }
         }
 
         public IEnumerable<Position> GetPlayerPiecePositions(Player player) => GetPiecePositions().Where(position => this[position].Color == player);
+
+        public int GetPlayerPieceCount(Player player) => GetPlayerPiecePositions(player).Count();
     }
 }

@@ -1,35 +1,39 @@
-﻿using Checkers.Core.Controls;
+﻿using Checkers.Core.Models.Moves;
 using Checkers.Core.Models;
-using Checkers.Core.Models.Enums;
-using Checkers.Core.Models.Moves;
-using Checkers.Core.Models.Pieces;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
+using System.Windows.Shapes;
+using Checkers.Core.Models.Enums;
+using Checkers.Core.Controls;
+using System.Linq;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Shapes;
+using System.Windows.Controls;
+using System.IO;
 
-namespace Checkers.Core.Views
+namespace Checkers.Core
 {
-    public partial class NewGameView : Window
+    public partial class GameView : Window
     {
         private readonly Image[,] pieceImages = new Image[8, 8];
         private readonly Rectangle[,] highlights = new Rectangle[8, 8];
         private readonly IDictionary<Position, Move> moveCache = new Dictionary<Position, Move>();
+        private readonly string ScorePath = "../../Data/score.txt";
         private GameState gameState;
         private Position selectedPosition = null;
+        private int whiteScore, redScore;
 
-        public NewGameView()
+        public GameView()
         {
             InitializeComponent();
             InitBoard();
             gameState = new GameState(Board.Init(), Player.Red);
+            (whiteScore, redScore) = ReadScoreFromFile();
             DrawBoard(gameState.Board);
             SetCursor(gameState.CurrentPlayer);
-            UpdateCurrentPlayer();
-            UpdatePieceCounts();
+            UpdateScoreDisplay();
+            UpdatePieceCountsDisplay();
+            UpdateCurrentPlayerDisplay();
         }
 
         private void InitBoard()
@@ -53,11 +57,28 @@ namespace Checkers.Core.Views
                     pieceImages[r, c].Source = Assets.Assets.GetImage(board[r, c]);
         }
 
+        private void SetCursor(Player player) => Cursor = player == Player.White ? Assets.Assets.whiteCursor : Assets.Assets.blackCursor;
+
+        private void UpdateScoreDisplay() => Score.Text = $"White: {whiteScore} Red: {redScore}";
+
+        private void UpdatePieceCountsDisplay()
+        {
+            int whiteCount = gameState.Board.GetPlayerPieceCount(Player.White), redCount = gameState.Board.GetPlayerPieceCount(Player.Red);
+            WhiteCountText.Text = $"White Pieces: {whiteCount}";
+            RedCountText.Text = $"Red Pieces: {redCount}";
+        }
+
+        private void UpdateCurrentPlayerDisplay()
+        {
+            CurrentPlayer.Text = gameState.CurrentPlayer == Player.White ? "White's Turn" : "Red's Turn";
+            CurrentPlayer.Foreground = gameState.CurrentPlayer == Player.White ? Brushes.White : Brushes.Red;
+        }
+
         private void Button_Back_Click(object sender, RoutedEventArgs e) { new MainWindow().Show(); Close(); }
 
         private void BoardGrid_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if( IsMenuVisible()) return;
+            if (IsMenuVisible()) return;
             Position position = ToSquarePosition(e.GetPosition(BoardGrid));
             if (selectedPosition == null) OnFromSelectedPosition(position);
             else OnToSelectedPosition(position);
@@ -89,9 +110,16 @@ namespace Checkers.Core.Views
                 gameState.MakeMove(move);
                 DrawBoard(gameState.Board);
                 SetCursor(gameState.CurrentPlayer);
-                if (gameState.IsGameOver()) ShowGameOver();
-                UpdateCurrentPlayer();
-                UpdatePieceCounts();
+                if (gameState.IsGameOver())
+                {
+                    if (gameState.Result.Winner == Player.White) ++whiteScore;
+                    else if (gameState.Result.Winner == Player.Red) ++redScore;
+                    UpdateScoreDisplay();
+                    WriteScoreToFile(whiteScore, redScore);
+                    ShowGameOver();
+                }
+                UpdatePieceCountsDisplay();
+                UpdateCurrentPlayerDisplay();
             }
         }
 
@@ -104,31 +132,6 @@ namespace Checkers.Core.Views
         private void ShowHighlights() => moveCache.Keys.ToList().ForEach(to => highlights[to.Row, to.Column].Fill = new SolidColorBrush(Color.FromArgb(100, 125, 255, 125)));
 
         private void ClearHighlights() => moveCache.Keys.ToList().ForEach(to => highlights[to.Row, to.Column].Fill = Brushes.Transparent);
-
-        private void SetCursor(Player player) => Cursor = player == Player.White ? Assets.Assets.whiteCursor : Assets.Assets.blackCursor;
-
-        private void UpdateCurrentPlayer()
-        {
-            CurrentPlayer.Text = gameState.CurrentPlayer == Player.White ? "White's Turn" : "Red's Turn";
-            CurrentPlayer.Foreground = gameState.CurrentPlayer == Player.White ? Brushes.White : Brushes.Red;
-        }
-
-        private void UpdatePieceCounts()
-        {
-            int whiteCount = 0, redCount = 0;
-            for (int r = 0; r < pieceImages.GetLength(0); ++r)
-                for (int c = 0; c < pieceImages.GetLength(1); ++c)
-                {
-                    Piece piece = gameState.Board[r, c];
-                    if (piece != null)
-                    {
-                        if (piece.Color == Player.White) ++whiteCount;
-                        else ++redCount;
-                    }
-                }
-            WhiteCountText.Text = $"White Pieces: {whiteCount}";
-            RedCountText.Text = $"Red Pieces: {redCount}";
-        }
 
         private bool IsMenuVisible() => MenuContainer.Content != null;
 
@@ -146,9 +149,25 @@ namespace Checkers.Core.Views
                     gameState = new GameState(Board.Init(), Player.Red);
                     DrawBoard(gameState.Board);
                     SetCursor(gameState.CurrentPlayer);
+                    UpdateScoreDisplay();
                 }
-                else { new MainWindow().Show(); Close(); }
+                else
+                {
+                    new MainWindow().Show(); Close();
+                    (whiteScore, redScore) = (0, 0);
+                    WriteScoreToFile(whiteScore, redScore);
+                }
             };
         }
+
+        private (int whiteScore, int redScore) ReadScoreFromFile()
+        {
+            if (!File.Exists(ScorePath)) return (0, 0);
+            string[] lines = File.ReadAllLines(ScorePath);
+            int whiteScore = int.Parse(lines[0].Split(':')[1].Trim()), redScore = int.Parse(lines[1].Split(':')[1].Trim());
+            return (whiteScore, redScore);
+        }
+
+        private void WriteScoreToFile(int whiteScore, int redScore) => File.WriteAllLines(ScorePath, new string[] { $"White: {whiteScore}", $"Red: {redScore}" });
     }
 }

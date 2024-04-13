@@ -1,5 +1,4 @@
-﻿using Checkers.Core.Views;
-using System.Windows;
+﻿using System.Windows;
 
 namespace Checkers.Core
 {
@@ -7,6 +6,6 @@ namespace Checkers.Core
     {
         public MainWindow() => InitializeComponent();
 
-        private void Button_NewGame_Click(object sender, RoutedEventArgs e) { new NewGameView().Show(); Close(); }
+        private void Button_NewGame_Click(object sender, RoutedEventArgs e) { new GameView().Show(); Close(); }
     }
 }
