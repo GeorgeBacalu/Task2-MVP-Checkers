@@ -50,7 +50,7 @@ namespace Checkers.Core.Views
         {
             for (int r = 0; r < pieceImages.GetLength(0); ++r)
                 for (int c = 0; c < pieceImages.GetLength(1); ++c)
-                    pieceImages[r, c].Source = Images.Images.GetImage(board[r, c]);
+                    pieceImages[r, c].Source = Assets.Assets.GetImage(board[r, c]);
         }
 
         private void Button_Back_Click(object sender, RoutedEventArgs e) { new MainWindow().Show(); Close(); }
@@ -62,16 +62,6 @@ namespace Checkers.Core.Views
             if (selectedPosition == null) OnFromSelectedPosition(position);
             else OnToSelectedPosition(position);
         }
-
-        private void CacheMoves(IEnumerable<Move> moves)
-        {
-            moveCache.Clear();
-            moves.ToList().ForEach(move => moveCache[move.To] = move);
-        }
-
-        private void ShowHighlights() => moveCache.Keys.ToList().ForEach(to => highlights[to.Row, to.Column].Fill = new SolidColorBrush(Color.FromArgb(100, 125, 255, 125)));
-
-        private void ClearHighlights() => moveCache.Keys.ToList().ForEach(to => highlights[to.Row, to.Column].Fill = Brushes.Transparent);
 
         private Position ToSquarePosition(Point point)
         {
@@ -105,7 +95,17 @@ namespace Checkers.Core.Views
             }
         }
 
-        private void SetCursor(Player player) => Cursor = player == Player.White ? Images.Images.whiteCursor : Images.Images.blackCursor;
+        private void CacheMoves(IEnumerable<Move> moves)
+        {
+            moveCache.Clear();
+            moves.ToList().ForEach(move => moveCache[move.To] = move);
+        }
+
+        private void ShowHighlights() => moveCache.Keys.ToList().ForEach(to => highlights[to.Row, to.Column].Fill = new SolidColorBrush(Color.FromArgb(100, 125, 255, 125)));
+
+        private void ClearHighlights() => moveCache.Keys.ToList().ForEach(to => highlights[to.Row, to.Column].Fill = Brushes.Transparent);
+
+        private void SetCursor(Player player) => Cursor = player == Player.White ? Assets.Assets.whiteCursor : Assets.Assets.blackCursor;
 
         private void UpdateCurrentPlayer()
         {
@@ -122,8 +122,8 @@ namespace Checkers.Core.Views
                     Piece piece = gameState.Board[r, c];
                     if (piece != null)
                     {
-                        if (piece.Color == Player.White) whiteCount++;
-                        else redCount++;
+                        if (piece.Color == Player.White) ++whiteCount;
+                        else ++redCount;
                     }
                 }
             WhiteCountText.Text = $"White Pieces: {whiteCount}";
@@ -141,23 +141,14 @@ namespace Checkers.Core.Views
                 if (option == Option.Restart)
                 {
                     MenuContainer.Content = null;
-                    RestartGame();
+                    ClearHighlights();
+                    moveCache.Clear();
+                    gameState = new GameState(Board.Init(), Player.Red);
+                    DrawBoard(gameState.Board);
+                    SetCursor(gameState.CurrentPlayer);
                 }
-                else
-                {
-                    new MainWindow().Show();
-                    Close();
-                }
+                else { new MainWindow().Show(); Close(); }
             };
-        }
-
-        private void RestartGame()
-        {
-            ClearHighlights();
-            moveCache.Clear();
-            gameState = new GameState(Board.Init(), Player.Red);
-            DrawBoard(gameState.Board);
-            SetCursor(gameState.CurrentPlayer);
         }
     }
 }

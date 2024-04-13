@@ -50,6 +50,6 @@ namespace Checkers.Core.Models
                 }
         }
 
-        public IEnumerable<Position> GetPlayerPiecePositions(Player player) => GetPiecePositions().Where(pos => this[pos].Color == player);
+        public IEnumerable<Position> GetPlayerPiecePositions(Player player) => GetPiecePositions().Where(position => this[position].Color == player);
     }
 }

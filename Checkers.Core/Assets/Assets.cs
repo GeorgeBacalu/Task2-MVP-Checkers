@@ -7,9 +7,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace Checkers.Core.Images
+namespace Checkers.Core.Assets
 {
-    public static class Images
+    public static class Assets
     {
         private static readonly IDictionary<PieceType, ImageSource> whiteSources = new Dictionary<PieceType, ImageSource>()
         { { PieceType.Pawn, LoadImage("Assets/WhitePawn.png") }, { PieceType.King, LoadImage("Assets/WhiteKing.png") }};
