@@ -1,5 +1,6 @@
 ﻿using Checkers.Core.Models.Enums;
 using System;
+using System.Collections.Generic;
 
 namespace Checkers.Core.Models
 {
@@ -12,14 +13,18 @@ namespace Checkers.Core.Models
 
         public Player GetSquareColor() => (Row + Column) % 2 == 0 ? Player.White : Player.Red;
 
+        public bool IsInBounds() => Row >= 0 && Row < 8 && Column >= 0 && Column < 8;
+
         public override bool Equals(object obj) => obj is Position p && Row == p.Row && Column == p.Column;
 
         public override int GetHashCode() => Tuple.Create(Row, Column).GetHashCode();
 
-        public static bool operator ==(Position p1, Position p2) => p1.Equals(p2);
+        public static bool operator ==(Position p1, Position p2) => EqualityComparer<Position>.Default.Equals(p1, p2);
 
         public static bool operator !=(Position p1, Position p2) => !(p1 == p2);
 
         public static Position operator +(Position p, Direction d) => new Position(p.Row + d.RowDelta, p.Column + d.ColumnDelta);
+
+        public static Position operator -(Position p, Direction d) => new Position(p.Row - d.RowDelta, p.Column - d.ColumnDelta);
     }
 }

@@ -5,20 +5,31 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Checkers.Core"
         mc:Ignorable="d"
-        Title="Checkers Game" Width="700" SizeToContent="Height"
+        Title="Checkers Game" Width="750" SizeToContent="Height"
         Icon="Assets/Checkers.ico"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        Background="Black">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="100" />
+            <ColumnDefinition Width="150" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <Button Grid.Column="0" Content="Back" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="10" Padding="10,5" Width="80" Click="Button_Back_Click" />
-        <Viewbox Grid.Column="1">
-            <Grid x:Name="BoardGrid" Height="700" Width="700">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Button Grid.Column="0" Grid.Row="0" Content="Back" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="10" Padding="10,5" Width="80" Click="Button_Back_Click" />
+        <StackPanel Grid.Column="0" Grid.Row="1" VerticalAlignment="Top" Margin="10">
+            <TextBlock x:Name="CurrentPlayer" Text="Red's Turn" Foreground="Red" FontSize="18" Margin="0,0,0,20" />
+            <TextBlock x:Name="WhiteCountText" Text="White Pieces: 0" Foreground="White" FontSize="18" />
+            <TextBlock x:Name="RedCountText" Text="Red Pieces: 0" Foreground="Red" FontSize="18" />
+        </StackPanel>
+        <Viewbox Grid.Column="1" Grid.RowSpan="2">
+            <Grid x:Name="BoardGrid" Height="700" Width="700" MouseDown="BoardGrid_MouseDown">
                 <Grid.Background>
                     <ImageBrush ImageSource="Assets/Board.png" />
                 </Grid.Background>
+                <UniformGrid x:Name="HighlightGrid" Rows="8" Columns="8" />
                 <UniformGrid x:Name="PieceGrid" Rows="8" Columns="8" RenderOptions.BitmapScalingMode="HighQuality" />
             </Grid>
         </Viewbox>

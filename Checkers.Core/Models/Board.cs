@@ -1,5 +1,6 @@
 ﻿using Checkers.Core.Models.Enums;
 using Checkers.Core.Models.Pieces;
+using System;
 
 namespace Checkers.Core.Models
 {
@@ -7,7 +8,11 @@ namespace Checkers.Core.Models
     {
         private readonly Piece[,] pieces = new Piece[8, 8];
 
-        public Piece this[int r, int c] { get => pieces[r, c]; set => pieces[r, c] = value; }
+        public Piece this[int r, int c]
+        {
+            get => IsInBounds(new Position(r, c)) ? pieces[r, c] : throw new ArgumentOutOfRangeException($"Invalid position ({r}, {c})");
+            set => pieces[r, c] = IsInBounds(new Position(r, c)) ? value : throw new ArgumentOutOfRangeException($"Invalid position ({r}, {c})");
+        }
 
         public Piece this[Position p] { get => this[p.Row, p.Column]; set => this[p.Row, p.Column] = value; }
 
@@ -21,7 +26,7 @@ namespace Checkers.Core.Models
 
         private void InitPlayer(Player player)
         {
-            var pieceRows = player == Player.White ? new[] { 0, 1, 2 } : new[] { 5, 6, 7 };
+            int[] pieceRows = player == Player.White ? new[] { 0, 1, 2 } : new[] { 5, 6, 7 };
             foreach (int r in pieceRows)
                 for (int c = 0; c < pieces.GetLength(1); ++c)
                     if ((r + c) % 2 == 1)
