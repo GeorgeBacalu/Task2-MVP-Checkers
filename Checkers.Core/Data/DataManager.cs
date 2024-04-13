@@ -9,8 +9,8 @@ namespace Checkers.Core.Data
 
         public DataManager(string filePath) => _filePath = filePath;
 
-        public void SaveData<T>(T data) => File.WriteAllText(_filePath, JsonConvert.SerializeObject(data, Formatting.Indented));
+        public void SaveData<T>(T data) => File.WriteAllText(_filePath, JsonConvert.SerializeObject(data, Formatting.Indented, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Objects }));
 
-        public T LoadData<T>() => JsonConvert.DeserializeObject<T>(File.ReadAllText(_filePath));
+        public T LoadData<T>() => JsonConvert.DeserializeObject<T>(File.ReadAllText(_filePath), new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Objects });
     }
 }

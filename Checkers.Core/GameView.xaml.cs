@@ -10,6 +10,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Controls;
 using System.IO;
+using Checkers.Core.Data;
+using Newtonsoft.Json;
+using Microsoft.Win32;
 
 namespace Checkers.Core
 {
@@ -18,22 +21,34 @@ namespace Checkers.Core
         private readonly Image[,] pieceImages = new Image[8, 8];
         private readonly Rectangle[,] highlights = new Rectangle[8, 8];
         private readonly IDictionary<Position, Move> moveCache = new Dictionary<Position, Move>();
+        private readonly List<Move> gameMoves = new List<Move>();
+        private readonly DataManager gameDataManager = new DataManager("../../Data/game.json");
         private readonly string ScorePath = "../../Data/score.txt";
         private GameState gameState;
         private Position selectedPosition = null;
         private int whiteScore, redScore;
 
-        public GameView()
+        public GameView(List<Move> moves = null)
         {
             InitializeComponent();
             InitBoard();
             gameState = new GameState(Board.Init(), Player.Red);
+            MakeMoves(moves);
             (whiteScore, redScore) = ReadScoreFromFile();
             DrawBoard(gameState.Board);
             SetCursor(gameState.CurrentPlayer);
             UpdateScoreDisplay();
             UpdatePieceCountsDisplay();
             UpdateCurrentPlayerDisplay();
+        }
+
+        private void Button_Back_Click(object sender, RoutedEventArgs e) { new MainWindow().Show(); Close(); }
+
+        private void Button_SaveGame_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog dialog = new SaveFileDialog { Filter = "JSON files (*.json)|*.json", FileName = "game" };
+            if (dialog.ShowDialog() == true)
+                File.WriteAllText(dialog.FileName, JsonConvert.SerializeObject(gameMoves, Formatting.Indented, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Objects }));
         }
 
         private void InitBoard()
@@ -57,6 +72,12 @@ namespace Checkers.Core
                     pieceImages[r, c].Source = Assets.Assets.GetImage(board[r, c]);
         }
 
+        private void MakeMoves(List<Move> moves)
+        {
+            moves?.ForEach(move => { gameState.MakeMove(move); gameMoves.Add(move); });
+            gameDataManager.SaveData(gameMoves);
+        }
+
         private void SetCursor(Player player) => Cursor = player == Player.White ? Assets.Assets.whiteCursor : Assets.Assets.blackCursor;
 
         private void UpdateScoreDisplay() => Score.Text = $"White: {whiteScore} Red: {redScore}";
@@ -73,8 +94,6 @@ namespace Checkers.Core
             CurrentPlayer.Text = gameState.CurrentPlayer == Player.White ? "White's Turn" : "Red's Turn";
             CurrentPlayer.Foreground = gameState.CurrentPlayer == Player.White ? Brushes.White : Brushes.Red;
         }
-
-        private void Button_Back_Click(object sender, RoutedEventArgs e) { new MainWindow().Show(); Close(); }
 
         private void BoardGrid_MouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -108,6 +127,8 @@ namespace Checkers.Core
             if (moveCache.TryGetValue(position, out Move move))
             {
                 gameState.MakeMove(move);
+                gameMoves.Add(move);
+                gameDataManager.SaveData(gameMoves);
                 DrawBoard(gameState.Board);
                 SetCursor(gameState.CurrentPlayer);
                 if (gameState.IsGameOver())
