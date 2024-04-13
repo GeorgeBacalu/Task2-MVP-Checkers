@@ -1,6 +1,8 @@
 ﻿using Checkers.Core.Models.Enums;
 using Checkers.Core.Models.Pieces;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Checkers.Core.Models
 {
@@ -36,5 +38,18 @@ namespace Checkers.Core.Models
         public static bool IsInBounds(Position p) => p.Row >= 0 && p.Row < 8 && p.Column >= 0 && p.Column < 8;
 
         public bool IsEmpty(Position p) => this[p] == null;
+
+        public IEnumerable<Position> GetPiecePositions()
+        {
+            for (int r = 0; r < pieces.GetLength(0); ++r)
+                for (int c = 0; c < pieces.GetLength(1); ++c)
+                {
+                    Position position = new Position(r, c);
+                    if (!IsEmpty(position))
+                        yield return position;
+                }
+        }
+
+        public IEnumerable<Position> GetPlayerPiecePositions(Player player) => GetPiecePositions().Where(pos => this[pos].Color == player);
     }
 }

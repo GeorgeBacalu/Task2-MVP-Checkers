@@ -28,14 +28,14 @@ namespace Checkers.Core.Models.Pieces
                 foreach (Direction dir in dirs)
                 {
                     Position capturedPos = pos - (forward + dir), capturingPos = pos - 2 * (forward + dir);
-                    if (capturedPos.IsInBounds() && capturingPos.IsInBounds() && board[capturedPos] != null && board[capturedPos].Color != Color && board[capturingPos] == null) return true;
+                    if (capturedPos.IsInBounds() && capturingPos.IsInBounds() && board[capturedPos] != null && board[capturedPos].Color != Color && board[capturingPos].Color == Color) return true;
                 }
             return false;
         }
 
         private IEnumerable<Move> GetNonCapturingMoves(Position from, Board board) => dirs.Select(dir => from + forward + dir).Where(to => CanMoveTo(to, board)).Select(to => new NormalMove(from, to));
 
-        private IEnumerable<Move> GetCapturingMoves(Position from, Board board) => dirs.Select(dir => from + 2 * (forward + dir)).Where(to => CanCaptureAt(to, board)).Select(to => new NormalMove(from, to));
+        private IEnumerable<Move> GetCapturingMoves(Position from, Board board) => dirs.Select(dir => from + 2 * (forward + dir)).Where(to => CanCaptureAt(to, board)).Select(to => new CaptureMove(from, to));
 
         public override IEnumerable<Move> GetMoves(Position from, Board board) => GetNonCapturingMoves(from, board).Concat(GetCapturingMoves(from, board));
     }

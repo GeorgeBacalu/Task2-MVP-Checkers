@@ -23,6 +23,10 @@ namespace Checkers.Core.Models
 
         public static bool operator !=(Position p1, Position p2) => !(p1 == p2);
 
+        public static Position operator +(Position p1, Position p2) => new Position(p1.Row + p2.Row, p1.Column + p2.Column);
+
+        public static Position operator /(Position p, int scalar) => new Position(p.Row / scalar, p.Column / scalar);
+
         public static Position operator +(Position p, Direction d) => new Position(p.Row + d.RowDelta, p.Column + d.ColumnDelta);
 
         public static Position operator -(Position p, Direction d) => new Position(p.Row - d.RowDelta, p.Column - d.ColumnDelta);

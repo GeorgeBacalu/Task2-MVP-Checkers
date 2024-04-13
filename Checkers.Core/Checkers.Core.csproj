@@ -58,20 +58,31 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls\GameOverMenu.xaml.cs">
+      <DependentUpon>GameOverMenu.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Images\Images.cs" />
     <Compile Include="Models\Board.cs" />
     <Compile Include="Models\Direction.cs" />
+    <Compile Include="Models\Enums\EndReason.cs" />
     <Compile Include="Models\Enums\MoveType.cs" />
+    <Compile Include="Models\Enums\Option.cs" />
     <Compile Include="Models\Enums\Player.cs" />
     <Compile Include="Models\GameState.cs" />
+    <Compile Include="Models\Moves\CaptureMove.cs" />
     <Compile Include="Models\Moves\Move.cs" />
     <Compile Include="Models\Moves\NormalMove.cs" />
     <Compile Include="Models\Pieces\King.cs" />
     <Compile Include="Models\Pieces\Pawn.cs" />
     <Compile Include="Models\Pieces\Piece.cs" />
+    <Compile Include="Models\Result.cs" />
     <Compile Include="NewGameView.xaml.cs">
       <DependentUpon>NewGameView.xaml</DependentUpon>
     </Compile>
+    <Page Include="Controls\GameOverMenu.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

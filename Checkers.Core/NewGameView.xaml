@@ -31,6 +31,7 @@
                 </Grid.Background>
                 <UniformGrid x:Name="HighlightGrid" Rows="8" Columns="8" />
                 <UniformGrid x:Name="PieceGrid" Rows="8" Columns="8" RenderOptions.BitmapScalingMode="HighQuality" />
+                <ContentControl x:Name="MenuContainer" />
             </Grid>
         </Viewbox>
     </Grid>

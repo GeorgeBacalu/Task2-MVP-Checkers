@@ -1,4 +1,5 @@
-﻿using Checkers.Core.Models;
+﻿using Checkers.Core.Controls;
+using Checkers.Core.Models;
 using Checkers.Core.Models.Enums;
 using Checkers.Core.Models.Moves;
 using Checkers.Core.Models.Pieces;
@@ -56,7 +57,8 @@ namespace Checkers.Core.Views
 
         private void BoardGrid_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            var position = ToSquarePosition(e.GetPosition(BoardGrid));
+            if( IsMenuVisible()) return;
+            Position position = ToSquarePosition(e.GetPosition(BoardGrid));
             if (selectedPosition == null) OnFromSelectedPosition(position);
             else OnToSelectedPosition(position);
         }
@@ -97,6 +99,7 @@ namespace Checkers.Core.Views
                 gameState.MakeMove(move);
                 DrawBoard(gameState.Board);
                 SetCursor(gameState.CurrentPlayer);
+                if (gameState.IsGameOver()) ShowGameOver();
                 UpdateCurrentPlayer();
                 UpdatePieceCounts();
             }
@@ -125,6 +128,36 @@ namespace Checkers.Core.Views
                 }
             WhiteCountText.Text = $"White Pieces: {whiteCount}";
             RedCountText.Text = $"Red Pieces: {redCount}";
+        }
+
+        private bool IsMenuVisible() => MenuContainer.Content != null;
+
+        private void ShowGameOver()
+        {
+            GameOverMenu gameOverMenu = new GameOverMenu(gameState);
+            MenuContainer.Content = gameOverMenu;
+            gameOverMenu.SelectedOption += option =>
+            {
+                if (option == Option.Restart)
+                {
+                    MenuContainer.Content = null;
+                    RestartGame();
+                }
+                else
+                {
+                    new MainWindow().Show();
+                    Close();
+                }
+            };
+        }
+
+        private void RestartGame()
+        {
+            ClearHighlights();
+            moveCache.Clear();
+            gameState = new GameState(Board.Init(), Player.Red);
+            DrawBoard(gameState.Board);
+            SetCursor(gameState.CurrentPlayer);
         }
     }
 }
