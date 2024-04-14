@@ -10,10 +10,11 @@ namespace Checkers.Core
     public partial class MainWindow : Window
     {
         private DataManager gameDataManager;
+        private bool allowMultipleJumps = false;
 
         public MainWindow() => InitializeComponent();
 
-        private void Button_NewGame_Click(object sender, RoutedEventArgs e) { new GameView().Show(); Close(); }
+        private void Button_NewGame_Click(object sender, RoutedEventArgs e) { new GameView(allowMultipleJumps).Show(); Close(); }
 
         private void Button_OpenGame_Click(object sender, RoutedEventArgs e)
         {
@@ -22,8 +23,14 @@ namespace Checkers.Core
             {
                 gameDataManager = new DataManager(dialog.FileName);
                 List<Move> moves = gameDataManager.LoadData<List<Move>>();
-                new GameView(moves).Show(); Close();
+                new GameView(allowMultipleJumps, moves).Show(); Close();
             }
+        }
+
+        private void Button_AllowMultipleJumps_Click(object sender, RoutedEventArgs e)
+        {
+            allowMultipleJumps = !allowMultipleJumps;
+            MultipleJumpsModeButton.Content = allowMultipleJumps ? "Disable Multiple Jumps" : "Enable Multiple Jumps";
         }
     }
 }

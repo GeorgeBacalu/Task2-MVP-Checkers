@@ -12,6 +12,6 @@ namespace Checkers.Core.Models.Pieces
 
         public abstract Piece Copy();
 
-        public abstract List<Move> GetMoves(Position from, Board board);
+        public abstract List<Move> GetMoves(Position from, Board board, bool allowMultipleJumps);
     }
 }

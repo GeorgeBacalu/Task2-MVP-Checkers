@@ -9,13 +9,14 @@ namespace Checkers.Core.Models
     {
         public Board Board { get; }
         public Player CurrentPlayer { get; private set; }
+        public bool AllowMultipleJumps { get; set; }
         public Result Result { get; private set; } = null;
 
-        public GameState(Board board, Player player) => (Board, CurrentPlayer) = (board, player);
+        public GameState(Board board, Player player, bool allowMultipleJumps) => (Board, CurrentPlayer, AllowMultipleJumps) = (board, player, allowMultipleJumps);
 
-        public List<Move> GetPieceLegalMoves(Position from) => Board.IsEmpty(from) || Board[from].Color != CurrentPlayer ? new List<Move>() : Board[from].GetMoves(from, Board);
+        public List<Move> GetPieceLegalMoves(Position from) => Board.IsEmpty(from) || Board[from].Color != CurrentPlayer ? new List<Move>() : Board[from].GetMoves(from, Board, AllowMultipleJumps);
     
-        public List<Move> GetPlayerLegalMoves(Player player) => Board.GetPlayerPiecePositions(player).SelectMany(pos => Board[pos].GetMoves(pos, Board)).ToList();
+        public List<Move> GetPlayerLegalMoves(Player player) => Board.GetPlayerPiecePositions(player).SelectMany(pos => Board[pos].GetMoves(pos, Board, AllowMultipleJumps)).ToList();
 
         public void MakeMove(Move move)
         {

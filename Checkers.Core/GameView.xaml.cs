@@ -27,12 +27,14 @@ namespace Checkers.Core
         private GameState gameState;
         private Position selectedPosition = null;
         private int whiteScore, redScore;
+        private bool allowMultipleJumps;
 
-        public GameView(List<Move> moves = null)
+        public GameView(bool allowMultipleJumps, List<Move> moves = null)
         {
             InitializeComponent();
             InitBoard();
-            gameState = new GameState(Board.Init(), Player.Red);
+            this.allowMultipleJumps = allowMultipleJumps;
+            gameState = new GameState(Board.Init(), Player.Red, allowMultipleJumps);
             MakeMoves(moves);
             (whiteScore, redScore) = ReadScoreFromFile();
             DrawBoard(gameState.Board);
@@ -167,7 +169,7 @@ namespace Checkers.Core
                     MenuContainer.Content = null;
                     ClearHighlights();
                     moveCache.Clear();
-                    gameState = new GameState(Board.Init(), Player.Red);
+                    gameState = new GameState(Board.Init(), Player.Red, allowMultipleJumps);
                     DrawBoard(gameState.Board);
                     SetCursor(gameState.CurrentPlayer);
                     UpdateCurrentPlayerDisplay();
