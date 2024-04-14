@@ -17,7 +17,7 @@ namespace Checkers.Core.Models.Moves
             Piece piece = board[From];
             board[To] = new King(piece.Color);
             board[From] = null;
-            if (IsCapturing) board[(To + From) / 2] = null;
+            if (IsCapturing) board[(From + To) / 2] = null;
             piece.HasMoved = true;
         }
     }

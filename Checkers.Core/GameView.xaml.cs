@@ -111,7 +111,7 @@ namespace Checkers.Core
 
         private void OnFromSelectedPosition(Position position)
         {
-            IEnumerable<Move> moves = gameState.GetPieceLegalMoves(position);
+            List<Move> moves = gameState.GetPieceLegalMoves(position);
             if (moves.Any())
             {
                 selectedPosition = position;
@@ -144,10 +144,10 @@ namespace Checkers.Core
             }
         }
 
-        private void CacheMoves(IEnumerable<Move> moves)
+        private void CacheMoves(List<Move> moves)
         {
             moveCache.Clear();
-            moves.ToList().ForEach(move => moveCache[move.To] = move);
+            moves.ForEach(move => moveCache[move.To] = move);
         }
 
         private void ShowHighlights() => moveCache.Keys.ToList().ForEach(to => highlights[to.Row, to.Column].Fill = new SolidColorBrush(Color.FromArgb(100, 125, 255, 125)));
@@ -170,6 +170,8 @@ namespace Checkers.Core
                     gameState = new GameState(Board.Init(), Player.Red);
                     DrawBoard(gameState.Board);
                     SetCursor(gameState.CurrentPlayer);
+                    UpdateCurrentPlayerDisplay();
+                    UpdatePieceCountsDisplay();
                     UpdateScoreDisplay();
                 }
                 else

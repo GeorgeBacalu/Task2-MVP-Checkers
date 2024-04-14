@@ -39,17 +39,19 @@ namespace Checkers.Core.Models
 
         public bool IsEmpty(Position p) => this[p] == null;
 
-        public IEnumerable<Position> GetPiecePositions()
+        public List<Position> GetPiecePositions()
         {
+            List<Position> positions = new List<Position>();
             for (int r = 0; r < pieces.GetLength(0); ++r)
                 for (int c = 0; c < pieces.GetLength(1); ++c)
                 {
                     Position position = new Position(r, c);
-                    if (!IsEmpty(position)) yield return position;
+                    if (!IsEmpty(position)) positions.Add(position);
                 }
+            return positions;
         }
 
-        public IEnumerable<Position> GetPlayerPiecePositions(Player player) => GetPiecePositions().Where(position => this[position].Color == player);
+        public List<Position> GetPlayerPiecePositions(Player player) => GetPiecePositions().Where(position => this[position].Color == player).ToList();
 
         public int GetPlayerPieceCount(Player player) => GetPlayerPiecePositions(player).Count();
     }

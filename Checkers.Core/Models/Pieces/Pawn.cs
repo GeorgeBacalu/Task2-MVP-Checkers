@@ -28,30 +28,32 @@ namespace Checkers.Core.Models.Pieces
                 foreach (Direction dir in dirs)
                 {
                     Position capturedPos = pos - (forward + dir), capturingPos = pos - 2 * (forward + dir);
-                    if (Board.IsInBounds(capturedPos) && Board.IsInBounds(capturingPos) && board[capturedPos]?.Color != Color && board[capturingPos]?.Color == Color)
+                    if (Board.IsInBounds(capturedPos) && Board.IsInBounds(capturingPos) && board[capturedPos] != null && board[capturingPos] != null && board[capturedPos].Color != Color && board[capturingPos].Color == Color)
                         return true;
                 }
             return false;
         }
 
-        private IEnumerable<Move> GetNonCapturingMoves(Position from, Board board) => dirs
+        private List<Move> GetNonCapturingMoves(Position from, Board board) => dirs
             .Select(dir => from + forward + dir)
             .Where(to => CanMoveTo(to, board))
             .Select<Position, Move>(to =>
             {
                 if (to.Row == (Color == Player.White ? 7 : 0)) return new PawnPromotionMove(from, to);
                 else return new NormalMove(from, to);
-            });
+            })
+            .ToList();
 
-        private IEnumerable<Move> GetCapturingMoves(Position from, Board board) => dirs
+        private List<Move> GetCapturingMoves(Position from, Board board) => dirs
             .Select(dir => from + 2 * (forward + dir))
             .Where(to => CanCaptureAt(to, board))
             .Select<Position, Move>(to =>
             {
                 if (to.Row == (Color == Player.White ? 7 : 0)) return new PawnPromotionMove(from, to, true);
-                else return new CaptureMove(from, to);
-            });
+                else return new JumpMove(from, to);
+            })
+            .ToList();
 
-        public override IEnumerable<Move> GetMoves(Position from, Board board) => GetNonCapturingMoves(from, board).Concat(GetCapturingMoves(from, board));
+        public override List<Move> GetMoves(Position from, Board board) => GetNonCapturingMoves(from, board).Concat(GetCapturingMoves(from, board)).ToList();
     }
 }

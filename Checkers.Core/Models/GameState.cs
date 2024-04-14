@@ -13,9 +13,9 @@ namespace Checkers.Core.Models
 
         public GameState(Board board, Player player) => (Board, CurrentPlayer) = (board, player);
 
-        public IEnumerable<Move> GetPieceLegalMoves(Position from) => Board.IsEmpty(from) || Board[from].Color != CurrentPlayer ? Enumerable.Empty<Move>() : Board[from].GetMoves(from, Board);
+        public List<Move> GetPieceLegalMoves(Position from) => Board.IsEmpty(from) || Board[from].Color != CurrentPlayer ? new List<Move>() : Board[from].GetMoves(from, Board);
     
-        public IEnumerable<Move> GetPlayerLegalMoves(Player player) => Board.GetPlayerPiecePositions(player).SelectMany(pos => Board[pos].GetMoves(pos, Board));
+        public List<Move> GetPlayerLegalMoves(Player player) => Board.GetPlayerPiecePositions(player).SelectMany(pos => Board[pos].GetMoves(pos, Board)).ToList();
 
         public void MakeMove(Move move)
         {

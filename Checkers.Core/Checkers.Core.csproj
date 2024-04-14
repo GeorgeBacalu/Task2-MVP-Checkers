@@ -72,7 +72,7 @@
     <Compile Include="Models\Enums\Option.cs" />
     <Compile Include="Models\Enums\Player.cs" />
     <Compile Include="Models\GameState.cs" />
-    <Compile Include="Models\Moves\CaptureMove.cs" />
+    <Compile Include="Models\Moves\JumpMove.cs" />
     <Compile Include="Models\Moves\Move.cs" />
     <Compile Include="Models\Moves\NormalMove.cs" />
     <Compile Include="Models\Moves\PawnPromotionMove.cs" />
