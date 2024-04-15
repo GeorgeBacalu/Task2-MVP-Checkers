@@ -144,7 +144,7 @@
     <Resource Include="Assets\WhitePawn.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Data\score.txt" />
+    <Resource Include="Data\statistics.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

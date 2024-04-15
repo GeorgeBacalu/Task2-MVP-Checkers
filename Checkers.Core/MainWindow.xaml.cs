@@ -1,8 +1,8 @@
 ﻿using Checkers.Core.Data;
 using Checkers.Core.Models.Moves;
 using Microsoft.Win32;
-using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Windows;
 
 namespace Checkers.Core
@@ -32,5 +32,13 @@ namespace Checkers.Core
             allowMultipleJumps = !allowMultipleJumps;
             MultipleJumpsModeButton.Content = allowMultipleJumps ? "Disable Multiple Jumps" : "Enable Multiple Jumps";
         }
+
+        private void Button_Statistics_Click(object sender, RoutedEventArgs e) => MessageBox.Show(File.ReadAllText("../../Data/statistics.txt"));
+
+        private void Button_About_Click(object sender, RoutedEventArgs e) => MessageBox.Show(@"
+            Proiect dezvoltat de George Bacalu
+            Adresa institutionala: george.bacalu@student.unitbv.ro
+            Grupa: 10LF321
+            Descriere: Joc de dame");
     }
 }

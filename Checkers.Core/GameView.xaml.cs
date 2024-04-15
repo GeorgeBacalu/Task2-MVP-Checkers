@@ -13,6 +13,7 @@ using System.IO;
 using Checkers.Core.Data;
 using Newtonsoft.Json;
 using Microsoft.Win32;
+using System;
 
 namespace Checkers.Core
 {
@@ -23,10 +24,10 @@ namespace Checkers.Core
         private readonly IDictionary<Position, Move> moveCache = new Dictionary<Position, Move>();
         private readonly List<Move> gameMoves = new List<Move>();
         private readonly DataManager gameDataManager = new DataManager("../../Data/game.json");
-        private readonly string ScorePath = "../../Data/score.txt";
+        private readonly string StatisticsPath = "../../Data/statistics.txt";
         private GameState gameState;
         private Position selectedPosition = null;
-        private int whiteScore, redScore;
+        private int whiteScore, redScore, whiteRecord = 0, redRecord = 0;
         private bool allowMultipleJumps;
 
         public GameView(bool allowMultipleJumps, List<Move> moves = null)
@@ -36,7 +37,7 @@ namespace Checkers.Core
             this.allowMultipleJumps = allowMultipleJumps;
             gameState = new GameState(Board.Init(), Player.Red, allowMultipleJumps);
             MakeMoves(moves);
-            (whiteScore, redScore) = ReadScoreFromFile();
+            (whiteScore, redScore, whiteRecord, redRecord) = ReadStatisticsFromFile();
             DrawBoard(gameState.Board);
             SetCursor(gameState.CurrentPlayer);
             UpdateScoreDisplay();
@@ -135,10 +136,18 @@ namespace Checkers.Core
                 SetCursor(gameState.CurrentPlayer);
                 if (gameState.IsGameOver())
                 {
-                    if (gameState.Result.Winner == Player.White) ++whiteScore;
-                    else if (gameState.Result.Winner == Player.Red) ++redScore;
+                    if (gameState.Result.Winner == Player.White)
+                    {
+                        ++whiteScore;
+                        whiteRecord = Math.Max(whiteRecord, gameState.Board.GetPlayerPieceCount(Player.White));
+                    }
+                    else if (gameState.Result.Winner == Player.Red)
+                    {
+                        ++redScore;
+                        redRecord = Math.Max(redRecord, gameState.Board.GetPlayerPieceCount(Player.Red));
+                    }
                     UpdateScoreDisplay();
-                    WriteScoreToFile(whiteScore, redScore);
+                    WriteStatisticsToFile(whiteScore, redScore, whiteRecord, redRecord);
                     ShowGameOver();
                 }
                 UpdatePieceCountsDisplay();
@@ -179,20 +188,22 @@ namespace Checkers.Core
                 else
                 {
                     new MainWindow().Show(); Close();
-                    (whiteScore, redScore) = (0, 0);
-                    WriteScoreToFile(whiteScore, redScore);
+                    (whiteScore, redScore, whiteRecord, redRecord) = (0, 0, 0, 0);
+                    WriteStatisticsToFile(whiteScore, redScore, whiteRecord, redRecord);
                 }
             };
         }
 
-        private (int whiteScore, int redScore) ReadScoreFromFile()
+        private (int whiteScore, int redScore, int whiteRecord, int redRecord) ReadStatisticsFromFile()
         {
-            if (!File.Exists(ScorePath)) return (0, 0);
-            string[] lines = File.ReadAllLines(ScorePath);
+            if (!File.Exists(StatisticsPath)) return (0, 0, 0, 0);
+            string[] lines = File.ReadAllLines(StatisticsPath);
             int whiteScore = int.Parse(lines[0].Split(':')[1].Trim()), redScore = int.Parse(lines[1].Split(':')[1].Trim());
-            return (whiteScore, redScore);
+            int whiteRecord = int.Parse(lines[2].Split(':')[1].Trim()), redRecord = int.Parse(lines[3].Split(':')[1].Trim());
+            return (whiteScore, redScore, whiteRecord, redRecord);
         }
 
-        private void WriteScoreToFile(int whiteScore, int redScore) => File.WriteAllLines(ScorePath, new string[] { $"White: {whiteScore}", $"Red: {redScore}" });
+        private void WriteStatisticsToFile(int whiteScore, int redScore, int whiteRecord, int redRecord) => 
+            File.WriteAllLines(StatisticsPath, new string[] { $"White: {whiteScore}", $"Red: {redScore}", $"White Record: {whiteRecord}", $"Red Record: {redRecord}" });
     }
 }
