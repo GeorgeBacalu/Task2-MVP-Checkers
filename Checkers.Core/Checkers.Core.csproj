@@ -58,6 +58,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Controls\GameOverMenu.xaml.cs">
       <DependentUpon>GameOverMenu.xaml</DependentUpon>
     </Compile>
@@ -81,6 +82,8 @@
     <Compile Include="Models\Pieces\Pawn.cs" />
     <Compile Include="Models\Pieces\Piece.cs" />
     <Compile Include="Models\Result.cs" />
+    <Compile Include="ViewModels\GameOverMenuViewModel.cs" />
+    <Compile Include="ViewModels\MainViewModel.cs" />
     <Page Include="Controls\GameOverMenu.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
